@@ -1,0 +1,12 @@
+{
+  "cargo_desejado": "Desenvolvedor Full-stack",
+  "stack_principal": ["React", "Node.js", "TypeScript", "JavaScript"],
+  "stack_secundaria": ["Next.js", "PostgreSQL", "Tailwind CSS"],
+  "senioridade_ideal": ["Pleno", "Sênior"],
+  "modelo_ideal": ["Remoto", "Híbrido (Recife/Jaboatão)"],
+  "localizacao_ideal": ["Brasil"],
+  "idioma_aceito": ["Português", "Inglês Técnico"],
+  "salario_minimo": "R$ 8.000",
+  "palavras_prioridade": ["typescript", "remoto", "vaga definitiva", "clt"],
+  "palavras_descartar": ["presencial em são paulo", "php", "estágio", "vaga temporária"]
+}

@@ -1,0 +1,294 @@
+{
+    "count": 111,
+    "results": [
+        {
+            "__CLASS__": "Adzuna::API::Response::Job",
+            "location": {
+                "display_name": "São Paulo, Estado de São Paulo",
+                "area": [
+                    "Brasil",
+                    "Sudeste",
+                    "Estado de São Paulo",
+                    "São Paulo"
+                ],
+                "__CLASS__": "Adzuna::API::Response::Location"
+            },
+            "title": "Desenvolvedor Frontend (React, JavaScript, TypeScript e CSS)",
+            "created": "2022-07-01T22:07:56Z",
+            "redirect_url": "https://www.adzuna.com.br/details/3281926548?utm_medium=api&utm_source=03c7f745",
+            "description": "Candidate-se para esta vaga aqui: turing.com/s/AQxyvH Trabalhe em home office para empresas dos EUA e ganhe em dólar. Somente candidatos com mais de 5 anos de experiência em desenvolvimento de software serão elegíveis para esta vaga. A Turing.com está procurando contratar um Desenvolvedor Frontend em nome de uma empresa, listada na NASDAQ, que está criando um site de e-commerce em escala global para consumidores, vendedores e criadores de conteúdo. O candidato selecionado será encarregado de cr…",
+            "category": {
+                "tag": "creative-design-jobs",
+                "__CLASS__": "Adzuna::API::Response::Category",
+                "label": "Vagas em Criação e Design"
+            },
+            "id": "3281926548",
+            "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiMzI4MTkyNjU0OCIsInMiOiJpaHB0V18wNDhSR1NLLURjek93djZBIn0.Dwni1VHZ8HPeQYtKSLd7EbznEb9-sYpiN0suGjOz4ew",
+            "company": {
+                "__CLASS__": "Adzuna::API::Response::Company",
+                "display_name": "Turing.com"
+            },
+            "salary_is_predicted": "0"
+        },
+        {
+            "description": "Our client is building a web platform that delivers modern, cloud-based experiences aligned with Sensei Cloud. The application is modular in nature and will grow over time. As a Full‑Stack Engineer, you will be a core contributor shaping both the React/TypeScript frontend and the ASP.NET backend, delivering end-to-end features from UI through API and data persistence. This is a full-product ownership role in a HIPAA-regulated healthcare environment, requiring strong technical judgment, attentio…",
+            "redirect_url": "https://www.adzuna.com.br/details/5679749511?utm_medium=api&utm_source=03c7f745",
+            "__CLASS__": "Adzuna::API::Response::Job",
+            "location": {
+                "display_name": "Brasil",
+                "area": [
+                    "Brasil"
+                ],
+                "__CLASS__": "Adzuna::API::Response::Location"
+            },
+            "title": "Fullstack Developer (Frontend Focus - TypeScript/React)",
+            "created": "2026-03-26T19:55:56Z",
+            "contract_time": "full_time",
+            "category": {
+                "__CLASS__": "Adzuna::API::Response::Category",
+                "label": "Vagas em Engenharia",
+                "tag": "engineering-jobs"
+            },
+            "id": "5679749511",
+            "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiaWhwdFdfMDQ4UkdTSy1EY3pPd3Y2QSIsImkiOiI1Njc5NzQ5NTExIn0.Fg6hHbaGTlroUQXLcI9xBnSU7RDa7lI4XbVD-2U9iEA",
+            "company": {
+                "__CLASS__": "Adzuna::API::Response::Company",
+                "display_name": "Zipdev"
+            },
+            "salary_is_predicted": "0"
+        },
+        {
+            "description": "Cliente: Grupo empresarial , ligado ao segmento de entretenimento/musica , estruturando seu time de tecnologia. Requisitos: Frontend (React  TypeScript) Experie^ncia com React 18 e TypeScript. Conhecimento em Vite para build e desenvolvimento ra´pido. Familiaridade com React Router para gerenciamento de rotas. Experie^ncia em React Query para gerenciamento de estado assi´ncrono. Conhecimento em SASS para estilizac¸a~o avanc¸ada. Experie^ncia com Axios para consumo de APIs REST. Conhecimento em …",
+            "redirect_url": "https://www.adzuna.com.br/details/5100675987?utm_medium=api&utm_source=03c7f745",
+            "location": {
+                "display_name": "São Paulo, Estado de São Paulo",
+                "area": [
+                    "Brasil",
+                    "Sudeste",
+                    "Estado de São Paulo",
+                    "São Paulo"
+                ],
+                "__CLASS__": "Adzuna::API::Response::Location"
+            },
+            "__CLASS__": "Adzuna::API::Response::Job",
+            "created": "2025-03-19T07:28:11Z",
+            "title": "DESENVOLVEDOR FULLSTACK SENIOR - REACT /NODE JS -remoto",
+            "category": {
+                "tag": "hr-jobs",
+                "__CLASS__": "Adzuna::API::Response::Category",
+                "label": "Vagas em Recursos Humanos"
+            },
+            "id": "5100675987",
+            "salary_is_predicted": "0",
+            "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiaWhwdFdfMDQ4UkdTSy1EY3pPd3Y2QSIsImkiOiI1MTAwNjc1OTg3In0.79pTaqe5kxed6dX5EOCniBkeVxGw_4S1O1hSnUYDwYk",
+            "company": {
+                "display_name": "HOLDEN Recruiting Talents",
+                "__CLASS__": "Adzuna::API::Response::Company"
+            }
+        },
+        {
+            "category": {
+                "__CLASS__": "Adzuna::API::Response::Category",
+                "label": "Vagas em Tecnologia Informática",
+                "tag": "it-jobs"
+            },
+            "description": "We’re looking for a Full Stack Developer to join our team, with a strong emphasis on frontend development using React and TypeScript. In this role, you’ll primarily focus on building high-quality user interfaces while also contributing to backend services built with .NET/C# when needed. We value engineers who enjoy solving complex problems, take ownership of their work, and dive deep into understanding the business domain. You should be comfortable designing scalable service contracts, working …",
+            "redirect_url": "https://www.adzuna.com.br/land/ad/5697206232?se=ihptW_048RGSK-DczOwv6A&utm_medium=api&utm_source=03c7f745&v=09BBC6B93D7DD17CB917A0169A7A3CDBFFE6C1D0",
+            "title": "Senior Fullstack Engineer (React.js & .Net)",
+            "__CLASS__": "Adzuna::API::Response::Job",
+            "location": {
+                "__CLASS__": "Adzuna::API::Response::Location",
+                "display_name": "Brasil",
+                "area": [
+                    "Brasil"
+                ]
+            },
+            "created": "2026-04-12T00:01:55Z",
+            "company": {
+                "display_name": "Avenue Code",
+                "__CLASS__": "Adzuna::API::Response::Company"
+            },
+            "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiaWhwdFdfMDQ4UkdTSy1EY3pPd3Y2QSIsImkiOiI1Njk3MjA2MjMyIn0.08PRXyT__SNgkKu1kzH1hrE4gIXW9b91uD2Efue3ma8",
+            "salary_is_predicted": "0",
+            "id": "5697206232"
+        },
+        {
+            "salary_is_predicted": "0",
+            "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiNTY2ODg1OTMwNCIsInMiOiJpaHB0V18wNDhSR1NLLURjek93djZBIn0.zqUd0kbJWwqeAMpyVKpk_FVRHTBiyuFCl610pn4Tf7Y",
+            "company": {
+                "__CLASS__": "Adzuna::API::Response::Company",
+                "display_name": "Solúvia"
+            },
+            "id": "5668859304",
+            "category": {
+                "__CLASS__": "Adzuna::API::Response::Category",
+                "label": "Unknown",
+                "tag": "unknown"
+            },
+            "salary_max": 120000,
+            "contract_time": "full_time",
+            "__CLASS__": "Adzuna::API::Response::Job",
+            "location": {
+                "display_name": "Brasil",
+                "area": [
+                    "Brasil"
+                ],
+                "__CLASS__": "Adzuna::API::Response::Location"
+            },
+            "title": "Desenvolvedor(a) Fullstack Pleno – Node.js, Typescript e React",
+            "created": "2026-03-16T17:13:37Z",
+            "salary_min": 96000,
+            "description": "VAGA: Desenvolvedor(a) Fullstack Pleno – Node.js, Typescript e React | Modalidade: Hibrido - PJ| Horário de trabalho: Segunda a sexta-feira - 44 horas semanais Selecionamos um(a) Desenvolvedor(a) Fullstack Pleno com experiência em backend (micros serviços, mensageria, integrações) e domínio de tecnologias frontend modernas, especialmente Typescript e React. Procuramos alguém que queira atuar em um ambiente dinâmico e inovador, contribuindo para soluções robustas, escaláveis e com excelente expe…",
+            "redirect_url": "https://www.adzuna.com.br/details/5668859304?utm_medium=api&utm_source=03c7f745"
+        },
+        {
+            "latitude": -26.9362,
+            "longitude": -49.05842,
+            "id": "5665598202",
+            "salary_is_predicted": "0",
+            "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiaWhwdFdfMDQ4UkdTSy1EY3pPd3Y2QSIsImkiOiI1NjY1NTk4MjAyIn0.C93t_Suoe4jIUkwKk-immIwSVG5VLzbmNJmZ99pOOXg",
+            "company": {
+                "__CLASS__": "Adzuna::API::Response::Company",
+                "display_name": "Solúvia"
+            },
+            "__CLASS__": "Adzuna::API::Response::Job",
+            "location": {
+                "__CLASS__": "Adzuna::API::Response::Location",
+                "display_name": "Blumenau, Santa Catarina",
+                "area": [
+                    "Brasil",
+                    "Sul",
+                    "Santa Catarina",
+                    "Blumenau"
+                ]
+            },
+            "created": "2026-03-14T17:03:37Z",
+            "title": "Desenvolvedor(a) Fullstack Pleno – Node.js, Typescript e React",
+            "description": "VAGA: Desenvolvedor(a) Fullstack Pleno – Node.js, Typescript e React | Modalidade: Hibrido - PJ| Horário de trabalho: Segunda a sexta-feira - 44 horas semanais Selecionamos um(a) Desenvolvedor(a) Fullstack Pleno com experiência em backend (micros serviços, mensageria, integrações) e domínio de tecnologias frontend modernas, especialmente Typescript e React. Procuramos alguém que queira atuar em um ambiente dinâmico e inovador, contribuindo para soluções robustas, escaláveis e com excelente expe…",
+            "salary_min": 96000,
+            "redirect_url": "https://www.adzuna.com.br/details/5665598202?utm_medium=api&utm_source=03c7f745",
+            "category": {
+                "tag": "it-jobs",
+                "__CLASS__": "Adzuna::API::Response::Category",
+                "label": "Vagas em Tecnologia Informática"
+            },
+            "salary_max": 120000
+        },
+        {
+            "company": {
+                "display_name": "IQVIA",
+                "__CLASS__": "Adzuna::API::Response::Company"
+            },
+            "adref": "eyJhbGciOiJIUzI1NiJ9.eyJpIjoiNTY5Njg0NTU4NSIsInMiOiJpaHB0V18wNDhSR1NLLURjek93djZBIn0.h0-vnscsDwX_Y-rc6RrSpusGKZ-rRbG13KA2UzjMb-A",
+            "salary_is_predicted": "0",
+            "id": "5696845585",
+            "category": {
+                "__CLASS__": "Adzuna::API::Response::Category",
+                "label": "Unknown",
+                "tag": "unknown"
+            },
+            "description": "responsive, user-friendly front-end interfaces using React with TypeScript. You’ll work closely with your team to ship features that support software solutions in the clinical trial lifecycle, including Electronic Data Capture (EDC) systems and related tools Responsibilities: - Collaborate with team members to design, develop, and deliver new features. - Write clean, maintainable, and well-tested code for both backend (Node.js with TypeScript) and frontend (React with TypeScript) - Participate …",
+            "redirect_url": "https://www.adzuna.com.br/details/5696845585?utm_medium=api&utm_source=03c7f745",
+            "created": "2026-04-11T17:20:48Z",
+            "__CLASS__": "Adzuna::API::Response::Job",
+            "location": {
+                "__CLASS__": "Adzuna::API::Response::Location",
+                "area": [
+                    "Brasil",
+                    "Sudeste",
+                    "Estado de São Paulo",
+                    "São Paulo"
+                ],
+                "display_name": "São Paulo, Estado de São Paulo"
+            },
+            "title": "Full Stack Developer"
+        },
+        {
+            "category": {
+                "__CLASS__": "Adzuna::API::Response::Category",
+                "label": "Vagas em Tecnologia Informática",
+                "tag": "it-jobs"
+            },
+            "__CLASS__": "Adzuna::API::Response::Job",
+            "title": "Engenheiro(a) de Software (Full Stack) | IT AI Team",
+            "location": {
+                "display_name": "Brasil",
+                "area": [
+                    "Brasil"
+                ],
+                "__CLASS__": "Adzuna::API::Response::Location"
+            },
+            "created": "2026-03-19T17:46:29Z",
+            "description": "No seu dia-a-dia: Trabalhar de perto com áreas de negócio e equipes de TI do BTG Pactual. Garantir alta disponibilidade das plataformas, criando e aprimorando processos de deploy. Ajudar a automatizar e otimizar processos e análises que impulsionam as operações do BTG. Desenvolver sistemas utilizando as tecnologias mais recentes para construir soluções inovadoras para o mercado de BPO; Esperamos de você: Graduação completa preferencialmente em Ciência da Computação, Sistemas de Informação, Anál…",
+            "redirect_url": "https://www.adzuna.com.br/details/5672428017?utm_medium=api&utm_source=03c7f745",
+            "salary_is_predicted": "0",
+            "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiaWhwdFdfMDQ4UkdTSy1EY3pPd3Y2QSIsImkiOiI1NjcyNDI4MDE3In0.F5wf71tZKELZfi_5N2CUutS4GxgzKqgP3BrWZWtL2uk",
+            "company": {
+                "display_name": "BTG Pactual",
+                "__CLASS__": "Adzuna::API::Response::Company"
+            },
+            "id": "5672428017"
+        },
+        {
+            "contract_time": "full_time",
+            "category": {
+                "label": "Unknown",
+                "__CLASS__": "Adzuna::API::Response::Category",
+                "tag": "unknown"
+            },
+            "description": "Nós somos apaixonados por energia, tecnologia e pessoas. Acreditamos que tecnologia e sustentabilidade são e serão ainda por muito tempo os pilares de uma economia moderna. Temos um propósito massivo de permitir que todo mundo produza a própria energia de forma simples e acessível! Vem construir esse propósito com a gente e ajudar a democratizar a energia solar no Brasil. Estamos buscando pessoas engajadas e animadas para essa jornada conosco! Quer conhecer um pouco mais sobre nós? Vem ver: htt…",
+            "redirect_url": "https://www.adzuna.com.br/details/4911226758?utm_medium=api&utm_source=03c7f745",
+            "__CLASS__": "Adzuna::API::Response::Job",
+            "title": "Pessoa desenvolvedora Fullstack Senior - 5 VAGAS",
+            "location": {
+                "display_name": "São Paulo, Estado de São Paulo",
+                "area": [
+                    "Brasil",
+                    "Sudeste",
+                    "Estado de São Paulo",
+                    "São Paulo"
+                ],
+                "__CLASS__": "Adzuna::API::Response::Location"
+            },
+            "created": "2024-10-23T09:30:27Z",
+            "salary_is_predicted": "0",
+            "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiaWhwdFdfMDQ4UkdTSy1EY3pPd3Y2QSIsImkiOiI0OTExMjI2NzU4In0.9GzObBrmFR-WeuwDSN3Eb85-vS88dPNJFqAb4j51sAE",
+            "company": {
+                "display_name": "Solar21",
+                "__CLASS__": "Adzuna::API::Response::Company"
+            },
+            "id": "4911226758"
+        },
+        {
+            "adref": "eyJhbGciOiJIUzI1NiJ9.eyJzIjoiaWhwdFdfMDQ4UkdTSy1EY3pPd3Y2QSIsImkiOiI1NjMwMTEyNDU5In0.z_Y--ysXJjdquC-JNw3lye58TVBDwUWuSdu8O2tyFx8",
+            "company": {
+                "display_name": "Groove Tech",
+                "__CLASS__": "Adzuna::API::Response::Company"
+            },
+            "salary_is_predicted": "0",
+            "id": "5630112459",
+            "category": {
+                "label": "Vagas em Tecnologia Informática",
+                "__CLASS__": "Adzuna::API::Response::Category",
+                "tag": "it-jobs"
+            },
+            "location": {
+                "__CLASS__": "Adzuna::API::Response::Location",
+                "display_name": "São Paulo, Estado de São Paulo",
+                "area": [
+                    "Brasil",
+                    "Sudeste",
+                    "Estado de São Paulo",
+                    "São Paulo"
+                ]
+            },
+            "__CLASS__": "Adzuna::API::Response::Job",
+            "created": "2026-02-14T17:27:59Z",
+            "title": "Banco de Talentos - Desenvolvedor(a) Frontend Sr",
+            "description": "Na Groove Tech, somos referência em inovação e excelência técnica no universo da Tecnologia da Informação. Atuamos com serviços de ITO (Information Technology Outsourcing), NOC 24x7 e Projetos Consultivos, sendo parceiros estratégicos de grandes empresas no Brasil. Combinamos inteligência, tecnologia e foco em resultados, entregando soluções completas que geram impacto real nos negócios. Somos o seu time de tecnologia!  Requirements 5 anos de experiência em desenvolvimento Frontend Stack TypeSc…",
+            "redirect_url": "https://www.adzuna.com.br/details/5630112459?utm_medium=api&utm_source=03c7f745"
+        }
+    ],
+    "mean": 64766.57,
+    "__CLASS__": "Adzuna::API::Response::JobSearchResults"
+}
