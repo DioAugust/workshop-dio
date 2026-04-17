@@ -1,551 +1,468 @@
-# README — Workshop 01
-
-## Agente de IA para receber vagas tech no WhatsApp
+# Workshop 01 — Agente de IA para receber vagas tech no WhatsApp
 
 ## Visão geral
 
-Neste workshop, o objetivo é construir um agente capaz de:
+Neste workshop, construímos um agente de ponta a ponta capaz de:
 
-1. buscar vagas tech em uma fonte online
-2. padronizar os dados recebidos
-3. comparar cada vaga com o perfil desejado do usuário
-4. atribuir score e categoria
-5. gerar uma mensagem curta
-6. enviar apenas as vagas relevantes no WhatsApp
-7. automatizar esse processo para rodar de forma recorrente
+1. Buscar vagas tech na API da Adzuna
+2. Padronizar os dados recebidos (normalização)
+3. Comparar cada vaga com o perfil desejado do usuário
+4. Atribuir score (0–10) e categoria (`ENVIAR_AGORA`, `TALVEZ`, `DESCARTAR`)
+5. Gerar uma mensagem curta para WhatsApp
+6. Enviar apenas as vagas relevantes no WhatsApp
+7. Automatizar o processo com cron para rodar de forma recorrente
 
-A arquitetura final do projeto fica assim:
+### Arquitetura
 
-**Adzuna API → normalização → análise com IA → regra de decisão → WhatsApp → agendamento por cron**
+```
+Adzuna API → normalização → análise com IA → regra de decisão → WhatsApp → cron
+```
 
+### Estrutura de arquivos
+
+```
+.
+├── AGENTS.md                      # Regras do agente para automação
+├── possiveis-erros.md             # Troubleshooting de erros comuns
+├── README.md
+└── src/
+    ├── buscar-adzuna.sh           # Coleta vagas da API Adzuna
+    ├── adzuna-response.json       # Resposta bruta da API (gerado)
+    ├── normalizar-adzuna.js       # Padroniza os dados das vagas
+    ├── vagas-normalizadas.json    # Vagas padronizadas (gerado)
+    ├── perfil.json                # Perfil desejado do usuário
+    ├── prompt.md                  # Prompt de triagem para o modelo
+    ├── analisar-vagas.js          # Envia vagas ao agente e coleta análise
+    ├── resultados.json            # Todas as análises (gerado)
+    ├── vagas-aprovadas.json       # Apenas vagas aprovadas (gerado)
+    ├── enviar-whatsapp.js         # Envia aprovadas no WhatsApp
+    └── executar-pipeline.sh       # Pipeline completo (orquestra tudo)
+```
+
+---
 
 ## Pré-requisitos
 
 Antes de começar, você precisa ter:
 
-* conta Google para usar o Google AI Studio
-* WSL com Ubuntu instalado
-* Node.js funcionando no ambiente
-* OpenClaw instalado
-* número de WhatsApp disponível para pareamento
-* conta na Adzuna para gerar as chaves da API
+- Conta Google para usar o [Google AI Studio](https://aistudio.google.com/)
+- WSL com Ubuntu instalado
+- Node.js funcionando no ambiente WSL
+- [OpenClaw](https://openclaw.ai/) instalado
+- Número de WhatsApp disponível para pareamento
+- Conta na [Adzuna](https://developer.adzuna.com/) para gerar `app_id` e `app_key`
 
+### Variáveis de ambiente necessárias
 
+| Variável | Descrição | Onde usar |
+|---|---|---|
+| `ADZUNA_APP_ID` | ID da aplicação Adzuna | `buscar-adzuna.sh` |
+| `ADZUNA_APP_KEY` | Chave da API Adzuna | `buscar-adzuna.sh` |
+| `WHATSAPP_TO` | Número destino (ex: `+5511999999999`) | `enviar-whatsapp.js` |
+| `OPENCLAW_AGENT_ID` | ID do agente OpenClaw (padrão: `main`) | `analisar-vagas.js` |
+| `OPENCLAW_THINKING` | Nível de raciocínio (padrão: `low`) | `analisar-vagas.js` |
+| `OPENCLAW_TIMEOUT` | Timeout em segundos (padrão: `120`) | `analisar-vagas.js` |
 
-## Etapa 1 — Criar conta no Google AI Studio e pegar a key
+---
 
-O primeiro passo é gerar a chave do modelo.
+## Guia passo a passo
 
-### O que fazer
+### Etapa 1 — Criar conta no Google AI Studio e gerar a API Key
 
-1. Criar ou acessar sua conta no Google AI Studio (https://aistudio.google.com/)
-2. Gerar uma API Key
-3. Guardar essa chave para usar no OpenClaw durante o onboarding
+1. Acesse [Google AI Studio](https://aistudio.google.com/)
+2. Gere uma API Key
+3. Guarde essa chave — ela será usada no onboarding do OpenClaw para configurar o modelo de triagem
 
-Essa chave será usada para configurar o modelo que fará a triagem das vagas.
+---
 
+### Etapa 2 — Instalar o OpenClaw no WSL
 
+Com o WSL e Ubuntu já funcionando, instale o OpenClaw:
 
-## Etapa 2 — Instalar o OpenClaw no WSL com Ubuntu (https://openclaw.ai/)
+```bash
+curl -fsSL https://openclaw.ai/install.sh | bash
+```
 
-Com o WSL e Ubuntu já funcionando, instalar o OpenClaw no terminal.
+Confirme a instalação:
 
-### Instalação
+```bash
+openclaw --version
+```
 
-Executar o comando de instalação do OpenClaw.
+---
 
-`curl -fsSL https://openclaw.ai/install.sh | bash`
+### Etapa 3 — Fazer o onboarding do OpenClaw
 
-Depois disso, conferir se ele está instalado corretamente e pronto para uso.
+```bash
+openclaw onboard
+```
 
+Selecione **YES** na primeira opção e depois **QUICKSTART**.
 
+Nessa etapa você configura:
 
-## Etapa 3 — Fazer o onboard do OpenClaw
+- Modelo principal: `google/gemini-3.1-flash-lite-preview`
+- Chave da API do modelo (a que você gerou na Etapa 1)
+- Gateway
+- Canal do WhatsApp
 
-Após instalar, executar o onboarding / quickstart do OpenClaw.
+Ao final, valide que tudo está saudável:
 
-`openclaw onboard`
-
-Dar YES na primeira opção e ai selecionar QUICKSTART
-
-### Objetivo dessa etapa
-
-Configurar:
-
-* o modelo principal (google/gemini-3.1-flash-lite-preview)
-* a chave da API do modelo
-* o gateway
-* o canal do WhatsApp
-
-### Resultado esperado
-
-Ao final do onboarding, o OpenClaw deve estar com:
-
-* gateway ativo
-* modelo definido
-* ambiente pronto para uso no TUI e nas automações
-
-Para conferir a saúde básica:
-
-´´´
-
-
+```bash
 openclaw status
-
 openclaw gateway status
-
 openclaw doctor
-
-´´´
-
-
-
-## Etapa 4 — Configurar o WhatsApp e Gateway direto no onboard
-
-Configurar o canal de WhatsApp com seu número.
-
-### O que fazer
-
-1. iniciar o login do canal WhatsApp
-2. escanear o QR Code
-3. aprovar o pareamento, se necessário
-4. validar que o canal está conectado
-
-Após isso em caso de erro de TRIM, rodar esse comando e reinciar o onboard:
-
-`openclaw update --tag 2026.4.12`
-
-
-### Objetivo
-
-Garantir que o agente consiga enviar mensagens reais no WhatsApp.
-
-### Se preferir fazer fora do onboard
-
-Faça o login:
-
-**openclaw channels login --channel whatsapp**
-
-Se estiver em modo de pairing, aprove o pareamento:
-
-**openclaw pairing list whatsapp**
-
-**openclaw pairing approve whatsapp <CODIGO>**
-
-## Etapa 5 — Fazer a primeira amostra no TUI
-
-Com o OpenClaw pronto, abrir o TUI para o primeiro teste manual.
-
-`openclaw tui`
-
-### Objetivo
-
-Fazer o agente entender quem ele é e qual é sua função no workshop.
-
-### O que testar
-
-Passar no TUI o prompt base com a instrução do agente:
-
-* ele recebe uma vaga
-* compara com o perfil
-* atribui score
-* decide categoria
-* gera mensagem curta de WhatsApp
-* envia a msg no whatsapp
-
-Essa etapa serve para validar a lógica do agente antes de automatizar qualquer coisa.
-
-
-## Etapa 6 — Primeiros testes manuais com vaga e perfil do usuário
-
-Agora fazer testes manuais com:
-
-* uma vaga
-* o perfil desejado do usuário
-
-### Objetivo
-
-Validar:
-
-* score
-* categoria
-* justificativa
-* resumo
-* mensagem de WhatsApp
-
-### Sugestão
-
-Testar pelo menos:
-
-* uma vaga boa
-* uma vaga média
-* uma vaga ruim
-
-
-
-## Etapa 7 — Envio dessas vagas no WhatsApp
-
-Depois da triagem manual funcionar, testar o envio para o WhatsApp.
-
-### Objetivo
-
-Comprovar que o agente não só analisa, mas também entrega a saída final no canal correto.
-
-### O que validar
-
-* mensagem curta
-* link da vaga
-* leitura fácil no WhatsApp
-* utilidade prática para o usuário final
-
-
-
-## Etapa 8 — Iniciar o processo de automação
-
-Depois de validar o fluxo manual, começar a automatização do pipeline.
-
-A partir daqui, a ideia deixa de ser “colar vaga manualmente” e passa a ser:
-
-* buscar vagas automaticamente
-* normalizar
-* analisar
-* salvar resultados
-* enviar só as aprovadas
+```
 
 ---
 
-## Etapa 9 — Criar conta na Adzuna e pegar as keys
+### Etapa 4 — Configurar o WhatsApp
 
-Agora configurar a fonte online de vagas.
+Durante o onboarding, ou separadamente:
 
-### O que fazer
+1. Inicie o login do canal WhatsApp
+2. Escaneie o QR Code
+3. Aprove o pareamento, se necessário
+4. Valide que o canal está conectado
 
-1. criar conta na Adzuna
-2. criar uma aplicação
-3. obter:
+Se preferir fazer fora do onboard:
 
-   * `app_id`
-   * `app_key`
+```bash
+openclaw channels login --channel whatsapp
+```
 
-### Objetivo
+Se estiver em modo de pairing:
 
-Usar a Adzuna como fonte automática de vagas para o agente.
+```bash
+openclaw pairing list whatsapp
+openclaw pairing approve whatsapp <CODIGO>
+```
 
----
-
-## Etapa 10 — Configuração inicial da Adzuna
-
-Com as credenciais em mãos, configurar a primeira chamada da API.
-
-### O que validar
-
-* conexão com a API
-* retorno JSON
-* presença do array `results`
-* campos principais da vaga
-
-### Resultado esperado
-
-Salvar a resposta da API em arquivo para servir de entrada para a próxima etapa.
-
-Arquivo usado:
-
-* `adzuna-response.json`
+> **Erro de TRIM?** Atualize o OpenClaw e reinicie o onboard:
+> ```bash
+> openclaw update --tag 2026.4.12
+> ```
 
 ---
 
-## Etapa 11 — Criar o primeiro script de normalização
+### Etapa 5 — Primeiro teste manual no TUI
 
-Agora criar a etapa de padronização dos dados.
+Abra o TUI para validar a lógica do agente antes de automatizar:
 
-### Objetivo
+```bash
+openclaw tui
+```
 
-Transformar o JSON cru da Adzuna no formato único esperado pelo agente.
+Passe o prompt base (`src/prompt.md`) com uma vaga de exemplo e o perfil (`src/perfil.json`). O agente deve:
 
-Arquivo usado:
-
-* `normalizar-adzuna.js`
-
-### Entrada
-
-* `adzuna-response.json`
-
-### Saída
-
-* `vagas-normalizadas.json`
-
-### O que essa etapa faz
-
-* renomeia campos
-* limpa texto
-* detecta modelo de trabalho
-* detecta senioridade
-* extrai stack
-* detecta idioma quando houver sinal suficiente
-* prepara o payload final da vaga
+- Comparar a vaga com o perfil
+- Atribuir score de 0 a 10
+- Decidir a categoria
+- Gerar mensagem curta para WhatsApp
 
 ---
 
-## Etapa 12 — Validar a normalização
+### Etapa 6 — Testes manuais com vagas reais
 
-Depois de rodar a normalização, conferir se os campos ficaram corretos.
+Teste com pelo menos 3 cenários:
 
-### O que observar
+| Cenário | Resultado esperado |
+|---|---|
+| Vaga boa (stack compatível, remoto, pleno/sênior) | Score alto, `ENVIAR_AGORA` |
+| Vaga média (stack parcial, híbrido) | Score médio, `TALVEZ` |
+| Vaga ruim (PHP, presencial SP, estágio) | Score baixo, `DESCARTAR` |
 
-* título
-* empresa
-* descrição
-* modelo
-* senioridade
-* localização
-* stack
-* salário
-* idioma
-* link
-* fonte
-
-Se necessário, ajustar o script até a normalização ficar boa o suficiente para o workshop.
+Valide: score, categoria, justificativa, resumo e mensagem de WhatsApp.
 
 ---
 
-## Etapa 13 — Criar o perfil desejado do usuário
+### Etapa 7 — Testar envio no WhatsApp
 
-Definir o perfil que será usado para comparar com as vagas.
+Depois da triagem manual funcionar, teste o envio real:
 
-Arquivo usado:
+```bash
+openclaw agent --to +5511999999999 --message "teste" --deliver
+```
 
-* `perfil.json`
-
-Esse arquivo representa os critérios de decisão do agente:
-
-* cargo desejado
-* stack principal
-* stack secundária
-* senioridade ideal
-* modelo de trabalho ideal
-* localização ideal
-* idioma aceito
-* salário mínimo
-* palavras de prioridade
-* palavras de descarte
+Valide que a mensagem chega com:
+- Texto curto e legível
+- Link da vaga
+- Leitura fácil no celular
 
 ---
 
-## Etapa 14 — Criar o prompt de triagem
+### Etapa 8 — Criar conta na Adzuna e obter as credenciais
 
-Definir o prompt usado para a análise de cada vaga.
+1. Crie conta em [developer.adzuna.com](https://developer.adzuna.com/)
+2. Crie uma aplicação
+3. Copie o `app_id` e `app_key`
 
-Arquivo usado:
+Exporte as variáveis:
 
-* `prompt-triagem.md`
-
-Esse prompt orienta o modelo a:
-
-* comparar vaga e perfil
-* atribuir score
-* justificar a decisão
-* classificar a categoria
-* gerar mensagem curta para WhatsApp
+```bash
+export ADZUNA_APP_ID="seu_app_id"
+export ADZUNA_APP_KEY="sua_app_key"
+```
 
 ---
 
-## Etapa 15 — Criar o script de análise das vagas
+### Etapa 9 — Buscar vagas na Adzuna (`buscar-adzuna.sh`)
 
-Com as vagas já normalizadas, criar o script que envia uma vaga por vez para o agente.
+O script faz uma chamada à API da Adzuna e salva a resposta bruta:
 
-Arquivo usado:
+```bash
+./buscar-adzuna.sh
+```
 
-* `analisar-vagas.js`
+**O que ele faz:**
+- Chama `GET /v1/api/jobs/br/search/1` com filtros de stack e exclusões
+- Busca por: `frontend react typescript`, excluindo `php presencial`
+- Salva o retorno em `adzuna-response.json`
 
-### Entrada
+**Exemplo de resposta bruta (campos principais):**
 
-* `perfil.json`
-* `prompt-triagem.md`
-* `vagas-normalizadas.json`
-
-### Saída
-
-* `resultados.json`
-* `vagas-aprovadas.json`
-
-### O que ele faz
-
-* lê o perfil
-* lê o prompt
-* lê as vagas normalizadas
-* monta a mensagem para o agente
-* captura a resposta em JSON
-* salva a análise
-* filtra as vagas aprovadas
-
----
-
-## Etapa 16 — Criar o envio automático no WhatsApp
-
-Depois da análise, criar a etapa de entrega das vagas aprovadas.
-
-Arquivo usado:
-
-* `enviar-whatsapp.js`
-
-### Entrada
-
-* `vagas-aprovadas.json`
-
-### O que ele faz
-
-* lê as vagas aprovadas
-* usa a mensagem curta gerada pelo modelo
-* envia uma a uma para o WhatsApp configurado
+```json
+{
+  "title": "Desenvolvedor Frontend (React, JavaScript, TypeScript e CSS)",
+  "company": { "display_name": "Turing.com" },
+  "location": { "display_name": "São Paulo, Estado de São Paulo" },
+  "description": "Trabalhe em home office para empresas dos EUA...",
+  "redirect_url": "https://www.adzuna.com.br/details/...",
+  "salary_min": null,
+  "salary_max": null,
+  "category": { "label": "Vagas em Criação e Design" }
+}
+```
 
 ---
 
-## Etapa 17 — Criar o pipeline completo
+### Etapa 10 — Normalizar as vagas (`normalizar-adzuna.js`)
 
-Agora juntar todas as etapas em um único fluxo executável.
+Transforma o JSON cru da Adzuna no formato padronizado esperado pelo agente:
 
-Arquivo usado:
+```bash
+node normalizar-adzuna.js
+```
 
-* `executar-pipeline.sh`
+**Entrada:** `adzuna-response.json`
+**Saída:** `vagas-normalizadas.json`
 
-### O que esse pipeline executa
+**O que a normalização faz:**
 
-1. busca vagas na Adzuna
-2. salva a resposta
-3. normaliza os dados
-4. analisa as vagas
-5. separa as aprovadas
-6. envia as aprovadas no WhatsApp
+| Transformação | Detalhes |
+|---|---|
+| Renomeia campos | `title` → `titulo`, `company.display_name` → `empresa` |
+| Limpa texto | Remove espaços duplicados, normaliza unicode |
+| Detecta modelo de trabalho | Busca por `remoto`, `híbrido`, `presencial` na descrição |
+| Detecta senioridade | Busca por `senior`, `pleno`, `junior` no título e descrição |
+| Extrai stack | Identifica 23+ tecnologias via regex (React, TypeScript, Node.js, etc.) |
+| Detecta idioma | Analisa sinais de Português vs Inglês na descrição |
+| Formata salário | Combina `salary_min` e `salary_max` |
 
-Esse é o arquivo principal da automação.
+**Exemplo de vaga normalizada:**
 
----
-
-## Etapa 18 — Criar o script de busca da Adzuna
-
-Separar a parte de coleta da API em um arquivo próprio.
-
-Arquivo usado:
-
-* `buscar-adzuna.sh`
-
-### O que ele faz
-
-* chama a API da Adzuna
-* usa `app_id` e `app_key`
-* salva o retorno bruto em `adzuna-response.json`
-
----
-
-## Etapa 19 — Testar o pipeline de ponta a ponta
-
-Antes de agendar, rodar o pipeline manualmente.
-
-### Objetivo
-
-Conferir se tudo funciona em sequência sem depender de intervenção manual.
-
-### O que validar
-
-* a API responde
-* a normalização gera JSON correto
-* a análise retorna score/categoria
-* as aprovadas são separadas
-* o WhatsApp recebe as mensagens
+```json
+{
+  "titulo": "Desenvolvedor Frontend (React, JavaScript, TypeScript e CSS)",
+  "empresa": "Turing.com",
+  "descricao": "Trabalhe em home office para empresas dos EUA...",
+  "modelo": "Remoto",
+  "senioridade": "Senior",
+  "localizacao": "São Paulo, Estado de São Paulo",
+  "stack": ["React", "TypeScript", "JavaScript", "CSS"],
+  "salario": "",
+  "idioma": "",
+  "link": "https://www.adzuna.com.br/details/...",
+  "fonte": "Adzuna"
+}
+```
 
 ---
 
-## Etapa 20 — Criar automação recorrente com cron
+### Etapa 11 — Configurar o perfil do usuário (`perfil.json`)
 
-Depois de validar o pipeline completo, automatizar a execução com cron no OpenClaw.
+O perfil define os critérios de decisão do agente:
 
-### Objetivo
+```json
+{
+  "cargo_desejado": "Desenvolvedor Full-stack",
+  "stack_principal": ["React", "Node.js", "TypeScript", "JavaScript"],
+  "stack_secundaria": ["Next.js", "PostgreSQL", "Tailwind CSS"],
+  "senioridade_ideal": ["Pleno", "Sênior"],
+  "modelo_ideal": ["Remoto", "Híbrido (Recife/Jaboatão)"],
+  "localizacao_ideal": ["Brasil"],
+  "idioma_aceito": ["Português", "Inglês Técnico"],
+  "salario_minimo": "R$ 8.000",
+  "palavras_prioridade": ["typescript", "remoto", "vaga definitiva", "clt"],
+  "palavras_descartar": ["presencial em são paulo", "php", "estágio", "vaga temporária"]
+}
+```
 
-Fazer o fluxo rodar sozinho em intervalo recorrente.
-
-### Configuração escolhida
-
-Rodar **de hora em hora**.
-
-### O que o cron faz
-
-* dispara o pipeline completo
-* executa o processo em sessão isolada
-* mantém a execução automática
-
----
-
-## Etapa 21 — Resultado final do workshop
-
-Ao final, o projeto fica com o seguinte comportamento:
-
-1. a Adzuna fornece novas vagas
-2. o script de busca salva a resposta
-3. o script de normalização padroniza os dados
-4. o agente analisa cada vaga com base no perfil
-5. o sistema salva score, categoria e mensagem
-6. apenas vagas aprovadas são enviadas no WhatsApp
-7. o cron repete esse processo automaticamente
+Edite este arquivo para refletir seu próprio perfil.
 
 ---
 
-## Estrutura de arquivos do projeto
+### Etapa 12 — Configurar o prompt de triagem (`prompt.md`)
 
-Arquivos principais já usados no processo:
+O prompt orienta o modelo a:
 
-* `AGENTS.md`
-* `buscar-adzuna.sh`
-* `adzuna-response.json`
-* `normalizar-adzuna.js`
-* `vagas-normalizadas.json`
-* `perfil.json`
-* `prompt-triagem.md`
-* `analisar-vagas.js`
-* `resultados.json`
-* `vagas-aprovadas.json`
-* `enviar-whatsapp.js`
-* `executar-pipeline.sh`
+- Comparar vaga × perfil
+- Atribuir score de 0 a 10
+- Justificar a decisão em até 3 frases
+- Classificar: `ENVIAR_AGORA`, `TALVEZ` ou `DESCARTAR`
+- Gerar mensagem curta para WhatsApp
+
+O modelo responde em JSON:
+
+```json
+{
+  "score": 8,
+  "categoria": "ENVIAR_AGORA",
+  "motivos": ["Stack compatível", "Modelo remoto", "Senioridade adequada"],
+  "resumo": "Vaga de frontend remoto com React/TypeScript na Turing.com",
+  "mensagem_whatsapp": "🟢 Vaga: Frontend React/TS — Turing.com — Remoto — Score 8/10"
+}
+```
 
 ---
 
-## O que foi validado no workshop
+### Etapa 13 — Analisar as vagas com IA (`analisar-vagas.js`)
 
-Ao final deste workshop, foi demonstrado:
+Envia cada vaga normalizada ao agente OpenClaw para triagem:
 
-* uso de IA para triagem de vagas
-* comparação vaga x perfil
-* classificação com score e categoria
-* geração de mensagem útil
-* entrega por WhatsApp
-* captura automática por API
-* normalização de dados
-* automação completa com cron
+```bash
+node analisar-vagas.js
+```
+
+**Entrada:** `perfil.json` + `prompt.md` + `vagas-normalizadas.json`
+**Saída:** `resultados.json` + `vagas-aprovadas.json`
+
+**O que o script faz:**
+
+1. Lê o perfil, o prompt e as vagas normalizadas
+2. Para cada vaga, monta uma mensagem combinando prompt + perfil + vaga
+3. Chama `openclaw agent` com `--session-id` único por vaga
+4. Extrai e valida o JSON da resposta (tenta parse direto, bloco markdown, ou busca balanceada de `{}`)
+5. Salva todas as análises em `resultados.json`
+6. Filtra vagas com categoria `ENVIAR_AGORA` ou `TALVEZ` em `vagas-aprovadas.json`
+
+**Variáveis de ambiente opcionais:**
+
+```bash
+export OPENCLAW_AGENT_ID="main"     # ID do agente
+export OPENCLAW_THINKING="low"      # Nível de raciocínio
+export OPENCLAW_TIMEOUT="120"       # Timeout por vaga (segundos)
+```
+
+---
+
+### Etapa 14 — Enviar vagas aprovadas no WhatsApp (`enviar-whatsapp.js`)
+
+```bash
+export WHATSAPP_TO="+5511999999999"
+node enviar-whatsapp.js
+```
+
+**Entrada:** `vagas-aprovadas.json`
+
+**O que ele faz:**
+- Lê as vagas aprovadas
+- Para cada uma, pega o campo `mensagem_whatsapp` da análise
+- Envia via `openclaw agent --to <numero> --message <texto> --deliver`
+
+---
+
+### Etapa 15 — Rodar o pipeline completo (`executar-pipeline.sh`)
+
+O pipeline orquestra todas as etapas em sequência:
+
+```bash
+./executar-pipeline.sh
+```
+
+**Fluxo executado:**
+
+```
+1) buscar-adzuna.sh      → adzuna-response.json
+2) normalizar-adzuna.js  → vagas-normalizadas.json
+3) analisar-vagas.js     → resultados.json + vagas-aprovadas.json
+```
+
+> O envio no WhatsApp (`enviar-whatsapp.js`) não está incluído no pipeline por padrão — rode separadamente quando quiser ativar o envio.
+
+---
+
+### Etapa 16 — Automatizar com cron
+
+Depois de validar o pipeline, agende a execução recorrente:
+
+```bash
+openclaw cron add --every 1h --command "./executar-pipeline.sh"
+```
+
+O cron dispara o pipeline completo de hora em hora em sessão isolada.
+
+---
+
+## Troubleshooting
+
+### Erros comuns com WhatsApp
+
+**Reconectar o canal:**
+
+```bash
+openclaw channels logout --channel whatsapp
+openclaw channels login --channel whatsapp --verbose
+```
+
+**Testar envio manual:**
+
+```bash
+openclaw agent --to +5511999999999 --message "teste" --deliver
+```
+
+**Listar e aprovar dispositivos:**
+
+```bash
+openclaw devices list
+openclaw devices approve <requestId>
+```
+
+**Erro de TRIM:**
+
+```bash
+openclaw update --tag 2026.4.12
+```
+
+**Configurar permissões de WhatsApp:**
+
+```bash
+openclaw config set channels.whatsapp.allowFrom '["+5511999999999"]' --json
+openclaw config set channels.whatsapp.dmPolicy '"allowlist"' --json
+openclaw config set channels.whatsapp.selfChatMode 'true' --json
+```
 
 ---
 
 ## Evoluções futuras
 
-Depois que o workshop estiver fechado, o projeto pode evoluir para:
-
-* deduplicação de vagas
-* histórico consolidado
-* múltiplas fontes além da Adzuna
-* revisão manual dos casos limítrofes
-* filtros por nicho
-* envio com regras mais sofisticadas
-* painel de acompanhamento
+- Deduplicação de vagas já analisadas
+- Histórico consolidado de análises
+- Múltiplas fontes além da Adzuna (LinkedIn, Gupy, etc.)
+- Revisão manual dos casos `TALVEZ`
+- Filtros por nicho ou área
+- Painel de acompanhamento
+- Regras de envio mais sofisticadas (horário, frequência)
 
 ---
 
 ## Conclusão
 
-Ao fim do processo, o workshop entrega um agente funcional de ponta a ponta:
+Ao fim do workshop, temos um agente funcional de ponta a ponta:
 
-* recebe vagas de uma fonte real
-* padroniza os dados
-* analisa aderência com IA
-* decide o que vale a pena
-* envia no WhatsApp
-* executa automaticamente de hora em hora
-
-Se você quiser, eu também posso transformar esse texto em uma versão mais “bonita de GitHub”, com seções, caixas de destaque e blocos de comando melhor organizados.
+- Recebe vagas de uma fonte real (Adzuna)
+- Padroniza os dados automaticamente
+- Analisa aderência com IA (score + categoria)
+- Decide o que vale a pena
+- Envia no WhatsApp
+- Executa automaticamente de hora em hora via cron
