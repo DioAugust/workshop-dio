@@ -1,4 +1,5 @@
-# Workshop 01 — Agente de IA para receber vagas tech no WhatsApp
+# Workshop 01 — Agente de IA para receber vagas tech no WhatsApp 
+**by Diogines Augusto**
 
 ## Visão geral
 
